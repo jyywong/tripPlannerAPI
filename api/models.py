@@ -30,6 +30,8 @@ class MemberInvite(models.Model):
 
 
 class TripEvent(models.Model):
+    trip = models.ForeignKey(
+        Trip, on_delete=models.CASCADE, related_name="tripEvents")
     time = models.TimeField()
     name = models.CharField(max_length=255)
     details = models.TextField()

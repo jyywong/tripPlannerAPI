@@ -35,6 +35,8 @@ class create_member_invite(generics.CreateAPIView):
 
 class user_trips_list(generics.ListCreateAPIView):
     serializer_class = TripSerializer
+    queryset = Trip.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         userTrips = Trip.objects.filter(members=self.request.user)
@@ -45,7 +47,7 @@ class trip_events_list(generics.ListCreateAPIView):
     serializer_class = TripEventSerializer
 
     def get_queryset(self):
-        tripEvents = TripEvent.objects.filter(id=self.kwargs['tripID'])
+        tripEvents = TripEvent.objects.filter(trip=self.kwargs['tripID'])
         return tripEvents
 
 

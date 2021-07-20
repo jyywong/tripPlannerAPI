@@ -34,7 +34,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
-        fields = ['name', 'members', 'admin']
+        fields = ['id', 'name', 'members', 'admin']
 
 
 class MemberInviteSerializer(serializers.ModelSerializer):
