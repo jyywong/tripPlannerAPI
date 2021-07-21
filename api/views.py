@@ -43,12 +43,24 @@ class user_trips_list(generics.ListCreateAPIView):
         return userTrips
 
 
+class user_single_trip(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TripSerializer
+    queryset = Trip.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+
 class trip_events_list(generics.ListCreateAPIView):
     serializer_class = TripEventSerializer
 
     def get_queryset(self):
         tripEvents = TripEvent.objects.filter(trip=self.kwargs['tripID'])
         return tripEvents
+
+
+class trip_single_event(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TripEventSerializer
+    queryset = TripEvent.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class event_idea_list(generics.ListCreateAPIView):

@@ -46,19 +46,19 @@ class MemberInviteSerializer(serializers.ModelSerializer):
 class TripEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = TripEvent
-        fields = ['time', 'name', 'details', 'locationName',
+        fields = ['id', 'time', 'name', 'details', 'locationName',
                   'address', 'placeID', 'lat', 'long']
 
 
 class EventIdeaSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventIdea
-        fields = ['suggestor', 'createdAt', 'time', 'name', 'details',
+        fields = ['id', 'suggestor', 'createdAt', 'time', 'name', 'details',
                   'locationName', 'address', 'placeID', 'lat', 'long', 'upvotes', 'downvotes']
 
 
 class AlternativeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alternative
-        fields = ['alternativeTo', 'createdAt', 'time', 'name', 'details',
+        fields = ['id', 'alternativeTo', 'createdAt', 'time', 'name', 'details',
                   'locationName', 'address', 'placeID', 'lat', 'long', 'upvotes', 'downvotes']

@@ -32,7 +32,7 @@ class MemberInvite(models.Model):
 class TripEvent(models.Model):
     trip = models.ForeignKey(
         Trip, on_delete=models.CASCADE, related_name="tripEvents")
-    time = models.TimeField()
+    time = models.DateTimeField()
     name = models.CharField(max_length=255)
     details = models.TextField()
     locationName = models.TextField(max_length=255)
@@ -48,7 +48,7 @@ class EventIdea(models.Model):
     suggestor = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     createdAt = models.DateTimeField()
-    time = models.TimeField()
+    time = models.DateTimeField()
     name = models.CharField(max_length=255)
     details = models.TextField()
     locationName = models.TextField(max_length=255)
@@ -64,7 +64,7 @@ class Alternative(models.Model):
     alternativeTo = models.ForeignKey(
         TripEvent, on_delete=models.CASCADE, related_name="alternatives")
     createdAt = models.DateTimeField()
-    time = models.TimeField()
+    time = models.DateTimeField()
     name = models.CharField(max_length=255)
     details = models.TextField()
     locationName = models.TextField(max_length=255)
