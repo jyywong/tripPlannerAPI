@@ -35,7 +35,6 @@ class TripEvent(models.Model):
     time = models.DateTimeField()
     name = models.CharField(max_length=255)
     details = models.TextField()
-    locationName = models.TextField(max_length=255)
     address = models.TextField(max_length=255)
     placeID = models.TextField(max_length=255)
     lat = models.FloatField()
@@ -63,6 +62,8 @@ class EventIdea(models.Model):
 class Alternative(models.Model):
     alternativeTo = models.ForeignKey(
         TripEvent, on_delete=models.CASCADE, related_name="alternatives")
+    createdBy = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="alternatives")
     createdAt = models.DateTimeField()
     time = models.DateTimeField()
     name = models.CharField(max_length=255)
@@ -70,7 +71,7 @@ class Alternative(models.Model):
     locationName = models.TextField(max_length=255)
     address = models.TextField(max_length=255)
     placeID = models.TextField(max_length=255)
-    lat = models.FloatField()
-    long = models.FloatField()
+    lat = models.FloatField(null=True, blank=True)
+    long = models.FloatField(null=True, blank=True)
     upvotes = models.IntegerField()
     downvotes = models.IntegerField()

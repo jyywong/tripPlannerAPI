@@ -46,7 +46,7 @@ class MemberInviteSerializer(serializers.ModelSerializer):
 class TripEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = TripEvent
-        fields = ['id', 'time', 'name', 'details', 'locationName',
+        fields = ['id', 'trip', 'time', 'name', 'details',
                   'address', 'placeID', 'lat', 'long']
 
 
@@ -60,5 +60,5 @@ class EventIdeaSerializer(serializers.ModelSerializer):
 class AlternativeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alternative
-        fields = ['id', 'alternativeTo', 'createdAt', 'time', 'name', 'details',
+        fields = ['id', 'alternativeTo', 'createdBy', 'createdAt', 'time', 'name', 'details',
                   'locationName', 'address', 'placeID', 'lat', 'long', 'upvotes', 'downvotes']
