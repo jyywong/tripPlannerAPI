@@ -39,6 +39,8 @@ class TripEvent(models.Model):
     placeID = models.TextField(max_length=255)
     lat = models.FloatField()
     long = models.FloatField()
+    eventIdea = models.ForeignKey(
+        'EventIdea', on_delete=models.CASCADE, related_name="tripEvent", null=True, blank=True)
 
 
 class EventIdea(models.Model):
@@ -57,6 +59,34 @@ class EventIdea(models.Model):
     long = models.FloatField()
     upvotes = models.IntegerField()
     downvotes = models.IntegerField()
+    status_choices = [
+        ('Suggested', 'Suggested'),
+        ('Added', 'Added'),
+    ]
+    status = models.CharField(
+        max_length=100,
+        choices=status_choices,
+        default='Suggested'
+    )
+
+    def AddEventIdeaToTripEvents(self):
+        TripEvent.objects.create(
+            trip=self.tripSuggestedTo,
+            time=self.time,
+            name=self.name,
+            details=self.details,
+            address=self.address,
+            placeID=self.placeID,
+            lat=self.lat,
+            long=self.long,
+            eventIdea=self
+        )
+
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            if self.status == 'Added':
+                self.AddEventIdeaToTripEvents()
+        super().save(*args, **kwargs)
 
 
 class Alternative(models.Model):
@@ -68,8 +98,8 @@ class Alternative(models.Model):
     time = models.DateTimeField()
     name = models.CharField(max_length=255)
     details = models.TextField()
-    locationName = models.TextField(max_length=255)
-    address = models.TextField(max_length=255)
+    locationName = models.TextField(max_length=255, null=True, blank=True)
+    address = models.TextField(max_length=255, null=True, blank=True)
     placeID = models.TextField(max_length=255)
     lat = models.FloatField(null=True, blank=True)
     long = models.FloatField(null=True, blank=True)

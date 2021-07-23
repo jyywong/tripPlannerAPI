@@ -72,6 +72,11 @@ class event_idea_list(generics.ListCreateAPIView):
         return tripEventIdeas
 
 
+class single_event_idea(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = EventIdeaSerializer
+    queryset = EventIdea.objects.all()
+
+
 class event_alternatives_list(generics.ListCreateAPIView):
     serializer_class = AlternativeSerializer
 

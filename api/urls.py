@@ -12,6 +12,7 @@ urlpatterns = [
     path('trip_events/<int:tripID>', views.trip_events_list.as_view()),
     path('trip_event/<int:pk>', views.trip_single_event.as_view()),
     path('event_ideas/<int:tripID>', views.event_idea_list.as_view()),
+    path('event_idea/<int:pk>', views.single_event_idea.as_view()),
     path('event_alternatives/<int:eventID>',
          views.event_alternatives_list.as_view())
 ]
