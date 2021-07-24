@@ -28,6 +28,15 @@ class MemberInvite(models.Model):
         default='Pending'
     )
 
+    def AcceptInvite(self):
+        self.trip.members.add(self.invitee)
+
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            if self.status == 'Accepted':
+                self.AcceptInvite()
+        super().save(*args, **kwargs)
+
 
 class TripEvent(models.Model):
     trip = models.ForeignKey(
@@ -41,6 +50,9 @@ class TripEvent(models.Model):
     long = models.FloatField()
     eventIdea = models.ForeignKey(
         'EventIdea', on_delete=models.CASCADE, related_name="tripEvent", null=True, blank=True)
+    alternativeSource = models.ForeignKey(
+        'Alternative', on_delete=models.CASCADE, related_name="alternativeResult", null=True, blank=True
+    )
 
 
 class EventIdea(models.Model):
@@ -105,3 +117,29 @@ class Alternative(models.Model):
     long = models.FloatField(null=True, blank=True)
     upvotes = models.IntegerField()
     downvotes = models.IntegerField()
+    status_choices = [
+        ('Suggested', 'Suggested'),
+        ('Added', 'Added'),
+    ]
+    status = models.CharField(
+        max_length=100,
+        choices=status_choices,
+        default='Suggested'
+    )
+
+    def OverwriteTripEventWithAlternative(self):
+        targetTripEvent = self.alternativeTo
+        targetTripEvent.name = self.name
+        targetTripEvent.details = self.details
+        targetTripEvent.address = self.address
+        targetTripEvent.placeID = self.placeID
+        targetTripEvent.lat = self.lat
+        targetTripEvent.long = self.long
+        targetTripEvent.alternativeSource = self
+        targetTripEvent.save()
+
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            if self.status == 'Added':
+                self.OverwriteTripEventWithAlternative()
+        super().save(*args, **kwargs)

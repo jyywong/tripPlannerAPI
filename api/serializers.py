@@ -1,3 +1,4 @@
+from collections import UserDict
 from rest_framework import serializers
 from .models import Trip, MemberInvite, TripEvent, EventIdea, Alternative
 from django.contrib.auth.models import User
@@ -31,23 +32,48 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return new_user
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
+
+
 class TripSerializer(serializers.ModelSerializer):
+    members = UserSerializer(many=True)
+
     class Meta:
         model = Trip
-        fields = ['id', 'name', 'members', 'admin']
+        fields = ['id', 'name', 'members']
 
 
 class MemberInviteSerializer(serializers.ModelSerializer):
+    inviteeEmail = serializers.EmailField(write_only=True)
+    invitee = serializers.ReadOnlyField(source='invitee.id')
+
     class Meta:
         model = MemberInvite
-        fields = ['trip', 'invitee', 'createdAt', 'status']
+        fields = ['trip', 'inviteeEmail', 'invitee',  'createdAt', 'status']
+
+    # TODO: Error handling for nonexistant email
+    def create(self, validated_data):
+        if User.objects.filter(email=validated_data['inviteeEmail']).exists():
+            invitee = User.objects.get(email=validated_data['inviteeEmail'])
+            newMemberInvite = MemberInvite.objects.create(
+                invitee=invitee, trip=validated_data['trip']
+            )
+            newMemberInvite.save()
+            return newMemberInvite
+        else:
+            raise serializers.ValidationError(
+                'This email does not belong to any user'
+            )
 
 
 class TripEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = TripEvent
         fields = ['id', 'trip', 'time', 'name', 'details',
-                  'address', 'placeID', 'lat', 'long', 'eventIdea']
+                  'address', 'placeID', 'lat', 'long', 'eventIdea', 'alternativeSource']
 
 
 class EventIdeaSerializer(serializers.ModelSerializer):
@@ -61,4 +87,4 @@ class AlternativeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alternative
         fields = ['id', 'alternativeTo', 'createdBy', 'createdAt', 'time', 'name', 'details',
-                  'locationName', 'address', 'placeID', 'lat', 'long', 'upvotes', 'downvotes']
+                  'locationName', 'address', 'placeID', 'lat', 'long', 'upvotes', 'downvotes', 'status']

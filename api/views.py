@@ -1,3 +1,4 @@
+from django.db.models import query
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -30,7 +31,8 @@ class user_invites_list(generics.ListAPIView):
 
 
 class create_member_invite(generics.CreateAPIView):
-    serializer_class = MemberInvite
+    serializer_class = MemberInviteSerializer
+    queryset = MemberInvite.objects.all()
 
 
 class user_trips_list(generics.ListCreateAPIView):
@@ -84,3 +86,8 @@ class event_alternatives_list(generics.ListCreateAPIView):
         eventAlternatives = Alternative.objects.filter(
             alternativeTo=self.kwargs['eventID'])
         return eventAlternatives
+
+
+class single_alternative(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = AlternativeSerializer
+    queryset = Alternative.objects.all()
