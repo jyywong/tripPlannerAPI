@@ -8,6 +8,8 @@ urlpatterns = [
     path('token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('create_member_invite', views.create_member_invite.as_view()),
+    path('user_invites', views.user_invites_list.as_view()),
+    path('single_invite/<int:pk>', views.single_invite.as_view()),
     path('trips', views.user_trips_list.as_view()),
     path('trip/<int:pk>', views.user_single_trip.as_view()),
     path('trip_events/<int:tripID>', views.trip_events_list.as_view()),

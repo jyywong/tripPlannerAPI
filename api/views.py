@@ -22,8 +22,8 @@ def api_registration_view(request):
     return Response(data)
 
 
-class user_invites_list(generics.ListAPIView):
-    serializer_class = MemberInvite
+class user_invites_list(generics.ListCreateAPIView):
+    serializer_class = MemberInviteSerializer
 
     def get_queryset(self):
         userInvites = MemberInvite.objects.filter(invitee=self.request.user)
@@ -31,6 +31,11 @@ class user_invites_list(generics.ListAPIView):
 
 
 class create_member_invite(generics.CreateAPIView):
+    serializer_class = MemberInviteSerializer
+    queryset = MemberInvite.objects.all()
+
+
+class single_invite(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = MemberInviteSerializer
     queryset = MemberInvite.objects.all()
 

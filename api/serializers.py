@@ -46,13 +46,24 @@ class TripSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'members']
 
 
+class TripNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Trip
+        fields = ['id', 'name']
+
+
 class MemberInviteSerializer(serializers.ModelSerializer):
+    admin = serializers.ReadOnlyField(source='trip.admin.username')
+    adminEmail = serializers.ReadOnlyField(source='trip.admin.email')
     inviteeEmail = serializers.EmailField(write_only=True)
     invitee = serializers.ReadOnlyField(source='invitee.id')
+    trip = TripNameSerializer(read_only=True)
+    tripID = serializers.IntegerField(source='trip.id')
 
     class Meta:
         model = MemberInvite
-        fields = ['trip', 'inviteeEmail', 'invitee',  'createdAt', 'status']
+        fields = ['id', 'admin', 'adminEmail', 'trip', 'tripID', 'inviteeEmail',
+                  'invitee',  'createdAt', 'status']
 
     # TODO: Error handling for nonexistant email
     def create(self, validated_data):
