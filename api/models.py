@@ -10,6 +10,7 @@ class Trip(models.Model):
         settings.AUTH_USER_MODEL, related_name="trips")
     admin = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                               related_name="admin_trips")
+    date = models.DateField()
 
 
 class MemberInvite(models.Model):

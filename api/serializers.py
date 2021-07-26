@@ -39,11 +39,20 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TripSerializer(serializers.ModelSerializer):
-    members = UserSerializer(many=True)
+    members = UserSerializer(many=True, read_only=True)
 
     class Meta:
         model = Trip
-        fields = ['id', 'name', 'members']
+        fields = ['id', 'name', 'members', 'date']
+
+    def create(self, validated_data):
+        newTrip = Trip.objects.create(
+            name=validated_data['name'],
+            admin=self.context['request'].user,
+            date=validated_data['date']
+        )
+        newTrip.members.set([self.context['request'].user])
+        return newTrip
 
 
 class TripNameSerializer(serializers.ModelSerializer):
