@@ -60,7 +60,8 @@ class trip_events_list(generics.ListCreateAPIView):
     serializer_class = TripEventSerializer
 
     def get_queryset(self):
-        tripEvents = TripEvent.objects.filter(trip=self.kwargs['tripID'])
+        tripEvents = TripEvent.objects.filter(
+            trip=self.kwargs['tripID']).order_by('time')
         return tripEvents
 
 
