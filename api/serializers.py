@@ -39,7 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TripSerializer(serializers.ModelSerializer):
-    members = UserSerializer(many=True, read_only=True)
+    members = UserSerializer(many=True)
 
     class Meta:
         model = Trip
@@ -53,6 +53,12 @@ class TripSerializer(serializers.ModelSerializer):
         )
         newTrip.members.set([self.context['request'].user])
         return newTrip
+
+
+class TripRemoveMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Trip
+        fields = ['id', 'members']
 
 
 class TripNameSerializer(serializers.ModelSerializer):
@@ -77,9 +83,11 @@ class MemberInviteSerializer(serializers.ModelSerializer):
     # TODO: Error handling for nonexistant email
     def create(self, validated_data):
         if User.objects.filter(email=validated_data['inviteeEmail']).exists():
+            print(validated_data)
             invitee = User.objects.get(email=validated_data['inviteeEmail'])
+            trip = Trip.objects.get(id=validated_data['trip']['id'])
             newMemberInvite = MemberInvite.objects.create(
-                invitee=invitee, trip=validated_data['trip']
+                invitee=invitee, trip=trip
             )
             newMemberInvite.save()
             return newMemberInvite

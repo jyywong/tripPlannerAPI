@@ -4,7 +4,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import generics, permissions, serializers
 from .models import Trip, MemberInvite, TripEvent, EventIdea, Alternative
-from .serializers import RegisterUserSerializer, TripSerializer, TripEventSerializer, MemberInviteSerializer, EventIdeaSerializer, AlternativeSerializer
+from .serializers import RegisterUserSerializer, TripSerializer, TripEventSerializer, MemberInviteSerializer, EventIdeaSerializer, AlternativeSerializer, TripRemoveMemberSerializer, UserSerializer
+from django.contrib.auth.models import User
+
 # Create your views here.
 
 
@@ -12,7 +14,7 @@ from .serializers import RegisterUserSerializer, TripSerializer, TripEventSerial
 def api_registration_view(request):
     serializer = RegisterUserSerializer(data=request.data)
     data = {}
-    if serializer.is_valid():
+    if serializer.is_valid(raise_exception=True):
         new_user = serializer.save()
         data['response'] = 'Successfully created new user'
         data['username'] = new_user.username
@@ -20,6 +22,11 @@ def api_registration_view(request):
     else:
         data = serializer.errors
     return Response(data)
+
+
+class user_details(generics.RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
 
 
 class user_invites_list(generics.ListCreateAPIView):
@@ -52,6 +59,12 @@ class user_trips_list(generics.ListCreateAPIView):
 
 class user_single_trip(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TripSerializer
+    queryset = Trip.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class remove_member_from_trip(generics.UpdateAPIView):
+    serializer_class = TripRemoveMemberSerializer
     queryset = Trip.objects.all()
     permission_classes = [permissions.IsAuthenticated]
 
