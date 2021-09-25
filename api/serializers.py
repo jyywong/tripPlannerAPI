@@ -38,8 +38,17 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email']
 
 
+class TripUserSerializer(serializers.ModelSerializer):
+    members = serializers.ReadOnlyField(source='user.username')
+    email = serializers.ReadOnlyField(source='user.email')
+
+    class Meta:
+        model = User
+        fields = ['id', 'members', 'email']
+
+
 class TripSerializer(serializers.ModelSerializer):
-    members = UserSerializer(many=True)
+    members = TripUserSerializer(many=True)
 
     class Meta:
         model = Trip
